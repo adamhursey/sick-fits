@@ -21,7 +21,7 @@ export const ProductImage = list({
   },
   ui: {
     listView: {
-      initialColumns: ['image', 'altText', 'product'],
+      initialColumns: ['altText', 'product'],
     },
   },
 });
