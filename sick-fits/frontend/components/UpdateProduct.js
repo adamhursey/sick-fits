@@ -1,5 +1,10 @@
 import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
+import Router from 'next/router';
+import PropTypes from 'prop-types';
+import DisplayError from './DisplayError';
+import Form from './styles/Form';
+import useForm from '../lib/useForm';
 
 const SINGLE_PRODUCT_QUERY = gql`
   query SINGLE_PRODUCT_QUERY($id: ID!) {
@@ -13,7 +18,7 @@ const SINGLE_PRODUCT_QUERY = gql`
 `;
 
 const UPDATE_PRODUCT_MUTATION = gql`
-  query UPDATE_PRODUCT_MUTATION(
+  mutation UPDATE_PRODUCT_MUTATION(
     $id: ID!
     $name: String
     $description: String
@@ -21,7 +26,7 @@ const UPDATE_PRODUCT_MUTATION = gql`
   ) {
     updateProduct(
       id: $id
-      data: { id: $id, name: $name, description: $description, price: $price }
+      data: { name: $name, description: $description, price: $price }
     ) {
       id
       name
@@ -33,25 +38,87 @@ const UPDATE_PRODUCT_MUTATION = gql`
 
 export default function UpdateProduct({ id }) {
   // 1. We need to get the existing product
-  const {
-    selectProductData,
-    selectProductError,
-    selectProductLoading,
-  } = useQuery(SINGLE_PRODUCT_QUERY, {
+  const { data, error, loading } = useQuery(SINGLE_PRODUCT_QUERY, {
     variables: { id },
   });
-  if (selectProductLoading) return <p>Loading...</p>;
-  if (selectProductError) return <p>Error: {selectProductError.message}</p>;
-  console.log(selectProductData);
+  console.log(data);
   // 2. We need to get the mutation to update the product
   const [
     updateProduct,
     { data: updateData, error: updateError, loading: updateLoading },
-  ] = useMutation(UPDATE_PRODUCT_MUTATION, {
-    variables: {
-      id,
-    },
-  });
+  ] = useMutation(UPDATE_PRODUCT_MUTATION);
+  // 2.5 Create some state for the form inputs:
+  const { inputs, handleChange, clearForm, resetForm } = useForm(data?.Product);
+  console.log(inputs);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const response = await updateProduct({
+      variables: {
+        id,
+        name: inputs.name,
+        description: inputs.description,
+        price: inputs.price,
+      },
+    }).catch(console.error);
+    console.log(response);
+    // TODO Handle Submit
+    // Submit input fields to backend
+    // const res = await createProduct();
+    // clearForm();
+    // // Go to the product page
+    // Router.push({ pathname: `/product/${res.data.createProduct.id}` });
+  }
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   // 3. We need the form to handle the updates
-  return <p>Update {updateData.Product.name}!</p>;
+  return (
+    <Form onSubmit={handleSubmit}>
+      <DisplayError error={error || updateError} />
+      <fieldset disabled={updateLoading} aria-busy={updateLoading}>
+        <label htmlFor="name">
+          Name
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Name"
+            value={inputs.name}
+            onChange={handleChange}
+          />
+        </label>
+        <label htmlFor="price">
+          Price
+          <input
+            type="number"
+            id="price"
+            name="price"
+            value={inputs.price}
+            onChange={handleChange}
+          />
+        </label>
+        <label htmlFor="description">
+          Description
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Description"
+            value={inputs.description}
+            onChange={handleChange}
+          />
+        </label>
+        <button type="submit">Update Product</button>
+      </fieldset>
+    </Form>
+  );
 }
+
+UpdateProduct.defaultProps = {
+  id: null,
+};
+
+UpdateProduct.propTypes = {
+  id: PropTypes.string,
+};

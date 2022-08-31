@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import styled from 'styled-components';
-import DisplayError from './ErrorMessage';
+import DisplayError from './DisplayError';
 
 const ProductStyles = styled.div`
   display: grid;
