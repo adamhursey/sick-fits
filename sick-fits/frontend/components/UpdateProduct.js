@@ -95,7 +95,7 @@ export default function UpdateProduct({ id }) {
             type="number"
             id="price"
             name="price"
-            value={inputs.price}
+            value={inputs.price || 0}
             onChange={handleChange}
           />
         </label>
