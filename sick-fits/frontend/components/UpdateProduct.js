@@ -41,7 +41,6 @@ export default function UpdateProduct({ id }) {
   const { data, error, loading } = useQuery(SINGLE_PRODUCT_QUERY, {
     variables: { id },
   });
-  console.log(data);
   // 2. We need to get the mutation to update the product
   const [
     updateProduct,
@@ -49,7 +48,6 @@ export default function UpdateProduct({ id }) {
   ] = useMutation(UPDATE_PRODUCT_MUTATION);
   // 2.5 Create some state for the form inputs:
   const { inputs, handleChange, clearForm, resetForm } = useForm(data?.Product);
-  console.log(inputs);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -61,7 +59,6 @@ export default function UpdateProduct({ id }) {
         price: inputs.price,
       },
     }).catch(console.error);
-    console.log(response);
     // TODO Handle Submit
     // Submit input fields to backend
     // const res = await createProduct();
