@@ -51,7 +51,7 @@ export default function SignUp() {
             In!
           </p>
         )}
-        <label htmlFor="email">
+        <label htmlFor="name">
           Your Name
           <input
             type="text"
@@ -84,7 +84,7 @@ export default function SignUp() {
             onChange={handleChange}
           />
         </label>
-        <button type="submit">Sign In!</button>
+        <button type="submit">Sign Up!</button>
       </fieldset>
     </Form>
   );
