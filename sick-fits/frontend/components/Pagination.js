@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Head from 'next/head';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import DisplayError from './DisplayError';
 import PaginationStyles from './styles/PaginationStyles';
 import { perPage } from '../config';
@@ -40,3 +41,7 @@ export default function Pagination({ page }) {
     </PaginationStyles>
   );
 }
+
+Pagination.propTypes = {
+  page: PropTypes.number,
+};

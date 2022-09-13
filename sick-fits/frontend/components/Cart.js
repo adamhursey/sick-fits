@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import CartStyles from './styles/CartStyles';
 import Supreme from './styles/Supreme';
 import { useUser } from './User';
@@ -63,3 +64,7 @@ export default function Cart() {
     </CartStyles>
   );
 }
+
+CartItem.propTypes = {
+  cartItem: PropTypes.object,
+};

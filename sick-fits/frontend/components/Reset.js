@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
+import PropTypes from 'prop-types';
 import Form from './styles/Form';
 import useForm from '../lib/useForm';
 import { CURRENT_USER_QUERY } from './User';
@@ -82,3 +83,7 @@ export default function Reset({ token }) {
     </Form>
   );
 }
+
+Reset.propTypes = {
+  token: PropTypes.string,
+};

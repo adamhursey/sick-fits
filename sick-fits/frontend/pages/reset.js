@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import RequestReset from '../components/RequestReset';
 import Reset from '../components/Reset';
 
@@ -16,3 +17,7 @@ export default function ResetPage({ query }) {
     </div>
   );
 }
+
+ResetPage.propTypes = {
+  query: PropTypes.object,
+};

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import { CURRENT_USER_QUERY } from './User';
