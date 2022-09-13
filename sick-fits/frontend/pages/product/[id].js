@@ -6,5 +6,5 @@ export default function SingleProductPage({ query }) {
 }
 
 SingleProductPage.propTypes = {
-  query: PropTypes.string,
+  query: PropTypes.object,
 };
