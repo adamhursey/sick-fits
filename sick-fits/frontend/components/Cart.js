@@ -50,7 +50,6 @@ export default function Cart() {
   const me = useUser();
   const { cartOpen, closeCart } = useCart();
   if (!me) return null;
-  console.log(me);
   return (
     <CartStyles open={cartOpen}>
       <header>
