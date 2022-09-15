@@ -18,15 +18,13 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 function MyApp({ Component, pageProps, apollo }) {
   return (
-    <React.StrictMode>
-      <ApolloProvider client={apollo}>
-        <CartStateProvider>
-          <Page>
-            <Component {...pageProps} />
-          </Page>
-        </CartStateProvider>
-      </ApolloProvider>
-    </React.StrictMode>
+    <ApolloProvider client={apollo}>
+      <CartStateProvider>
+        <Page>
+          <Component {...pageProps} />
+        </Page>
+      </CartStateProvider>
+    </ApolloProvider>
   );
 }
 
