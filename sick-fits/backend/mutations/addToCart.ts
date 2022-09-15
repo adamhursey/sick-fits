@@ -39,7 +39,7 @@ export default async function addToCart(
       product: {
         connect: {
           id: productId,
-          quantity: existingCartItem.quantity
+          // quantity: existingCartItem.quantity
         }
       },
       user: {

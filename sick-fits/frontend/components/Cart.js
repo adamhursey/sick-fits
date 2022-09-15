@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
+import { useMutation } from '@apollo/client';
 import CartStyles from './styles/CartStyles';
 import CloseButton from './styles/CloseButton';
 import Supreme from './styles/Supreme';
-import { useUser } from './User';
+import { CURRENT_USER_QUERY, useUser } from './User';
 import formatMoney from '../lib/formatMoney';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import { useCart } from '../lib/cartState';
@@ -23,9 +24,17 @@ const CartItemStyles = styled.li`
   }
 `;
 
-const DELETE_FROM_CART_MUTATION = gql`
-  mutation DELETE_FROM_CART_MUTATION($id: ID!) {
-    addToCart(productId: $id) {
+const DELETE_ONE_FROM_CART_MUTATION = gql`
+  mutation DELETE_ONE_FROM_CART_MUTATION($id: ID!) {
+    deleteOneFromCart(productId: $id) {
+      id
+    }
+  }
+`;
+
+const DELETE_ITEM_FROM_CART_MUTATION = gql`
+  mutation DELETE_ITEM_FROM_CART_MUTATION($id: ID!) {
+    deleteCartItem(id: $id) {
       id
     }
   }
@@ -33,6 +42,15 @@ const DELETE_FROM_CART_MUTATION = gql`
 
 function CartItem({ cartItem }) {
   const { product } = cartItem;
+  const [deleteOneFromCart] = useMutation(DELETE_ONE_FROM_CART_MUTATION, {
+    variables: { id: product.id },
+    refetchQueries: [{ query: CURRENT_USER_QUERY }],
+  });
+
+  const [deleteCartItem] = useMutation(DELETE_ITEM_FROM_CART_MUTATION, {
+    variables: { id: cartItem.id },
+    refetchQueries: [{ query: CURRENT_USER_QUERY }],
+  });
 
   if (!product) return null;
   return (
@@ -50,13 +68,11 @@ function CartItem({ cartItem }) {
             {cartItem.quantity} &times; {formatMoney(product.price)} each
           </em>
         </p>
-        <button
-          type="button"
-          onClick={() => {
-            console.log(product);
-          }}
-        >
-          &times;
+        <button type="button" onClick={deleteOneFromCart}>
+          Remove 1
+        </button>
+        <button type="button" onClick={deleteCartItem}>
+          Remove All
         </button>
       </div>
     </CartItemStyles>

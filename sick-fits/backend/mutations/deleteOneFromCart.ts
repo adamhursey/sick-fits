@@ -3,7 +3,7 @@ import { KeystoneContext } from '@keystone-next/types';
 import { CartItemUpdateInput } from '../.keystone/schema-types';
 import { Session } from '../types';
 
-export default async function deleteFromCart(
+export default async function deleteOneFromCart(
   root: any,
   { productId }: { productId: string },
   context: KeystoneContext
@@ -18,6 +18,8 @@ export default async function deleteFromCart(
     where: { user: { id: sesh.itemId }, product: { id: productId } },
     resolveFields: 'id,quantity'
   });
+
+  console.log(allCartItems);
 
   const [existingCartItem] = allCartItems;
 
