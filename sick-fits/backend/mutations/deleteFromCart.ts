@@ -1,13 +1,13 @@
 /* eslint-disable */
 import { KeystoneContext } from '@keystone-next/types';
-import { CartItemCreateInput } from '../.keystone/schema-types';
+import { CartItemUpdateInput } from '../.keystone/schema-types';
 import { Session } from '../types';
 
-export default async function addToCart(
+export default async function deleteFromCart(
   root: any,
   { productId }: { productId: string },
   context: KeystoneContext
-): Promise<CartItemCreateInput> {
+): Promise<CartItemUpdateInput> {
   // Query current user to see if signed in
   const sesh = context.session as Session;
   if (!sesh.itemId) {
@@ -22,31 +22,15 @@ export default async function addToCart(
   const [existingCartItem] = allCartItems;
 
 
-  if (existingCartItem) {
+  if (existingCartItem.quantity>1) {
     console.log(
-      `there are already ${existingCartItem.quantity} in the cart increment by 1`
+      `there ${existingCartItem.quantity} in the cart decrease by 1`
     );
-    // See if the item they are adding is already in their cart
-    // if it is, increment by 1,
     return await context.lists.CartItem.updateOne({
       id: existingCartItem.id,
-      data: { quantity: existingCartItem.quantity + 1 },
+      data: { quantity: existingCartItem.quantity -1 },
     });
   }
-  // if it isn't create a new cart item
-  return await context.lists.CartItem.createOne({
-    data: {
-      product: {
-        connect: {
-          id: productId,
-          quantity: existingCartItem.quantity
-        }
-      },
-      user: {
-        connect: {
-          id: sesh.itemId
-        }
-      }
-    }
-  })
+  // If there is only one then delete the item
+  return await context.lists.CartItem.deleteOne({ id: productId })
 }

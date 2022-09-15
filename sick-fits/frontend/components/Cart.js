@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import gql from 'graphql-tag';
 import CartStyles from './styles/CartStyles';
 import CloseButton from './styles/CloseButton';
 import Supreme from './styles/Supreme';
@@ -22,6 +23,14 @@ const CartItemStyles = styled.li`
   }
 `;
 
+const ADD_TO_CART_MUTATION = gql`
+  mutation ADD_TO_CART_MUTATION($id: ID!) {
+    addToCart(productId: $id) {
+      id
+    }
+  }
+`;
+
 function CartItem({ cartItem }) {
   const { product } = cartItem;
 
@@ -41,6 +50,14 @@ function CartItem({ cartItem }) {
             {cartItem.quantity} &times; {formatMoney(product.price)} each
           </em>
         </p>
+        <button
+          type="button"
+          onClick={() => {
+            console.log(product);
+          }}
+        >
+          &times;
+        </button>
       </div>
     </CartItemStyles>
   );
