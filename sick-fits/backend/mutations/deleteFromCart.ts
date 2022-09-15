@@ -32,5 +32,9 @@ export default async function deleteFromCart(
     });
   }
   // If there is only one then delete the item
-  return await context.lists.CartItem.deleteOne({ id: productId })
+
+
+  return await context.lists.CartItem.deleteOne({
+    id: existingCartItem.id,
+    })
 }

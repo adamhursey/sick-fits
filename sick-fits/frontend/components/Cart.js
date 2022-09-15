@@ -23,8 +23,8 @@ const CartItemStyles = styled.li`
   }
 `;
 
-const ADD_TO_CART_MUTATION = gql`
-  mutation ADD_TO_CART_MUTATION($id: ID!) {
+const DELETE_FROM_CART_MUTATION = gql`
+  mutation DELETE_FROM_CART_MUTATION($id: ID!) {
     addToCart(productId: $id) {
       id
     }
