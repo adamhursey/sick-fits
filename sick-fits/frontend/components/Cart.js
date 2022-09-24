@@ -9,6 +9,7 @@ import { CURRENT_USER_QUERY, useUser } from './User';
 import formatMoney from '../lib/formatMoney';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import { useCart } from '../lib/cartState';
+import RemoveFromCart from './RemoveFromCart';
 
 const CartItemStyles = styled.li`
   padding: 1rem 0;
@@ -32,23 +33,10 @@ const DELETE_ONE_FROM_CART_MUTATION = gql`
   }
 `;
 
-const DELETE_ITEM_FROM_CART_MUTATION = gql`
-  mutation DELETE_ITEM_FROM_CART_MUTATION($id: ID!) {
-    deleteCartItem(id: $id) {
-      id
-    }
-  }
-`;
-
 function CartItem({ cartItem }) {
   const { product } = cartItem;
   const [deleteOneFromCart] = useMutation(DELETE_ONE_FROM_CART_MUTATION, {
     variables: { id: product.id },
-    refetchQueries: [{ query: CURRENT_USER_QUERY }],
-  });
-
-  const [deleteCartItem] = useMutation(DELETE_ITEM_FROM_CART_MUTATION, {
-    variables: { id: cartItem.id },
     refetchQueries: [{ query: CURRENT_USER_QUERY }],
   });
 
@@ -68,13 +56,9 @@ function CartItem({ cartItem }) {
             {cartItem.quantity} &times; {formatMoney(product.price)} each
           </em>
         </p>
-        <button type="button" onClick={deleteOneFromCart}>
-          Remove 1
-        </button>
-        <button type="button" onClick={deleteCartItem}>
-          Remove All
-        </button>
+        {/* TODO: make it so that you can adjust quantity */}
       </div>
+      <RemoveFromCart id={cartItem.id} />
     </CartItemStyles>
   );
 }
