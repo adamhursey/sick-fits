@@ -21,17 +21,31 @@ const BigButton = styled.button`
   }
 `;
 
+function update(cache, payload) {
+  cache.evict({ id: cache.identify(payload.data.deleteCartItem) });
+}
+
 export default function RemoveFromCart({ id }) {
-  const [deleteCartItem] = useMutation(DELETE_ITEM_FROM_CART_MUTATION, {
-    variables: { id },
-    refetchQueries: [{ query: CURRENT_USER_QUERY }],
-  });
+  const [deleteCartItem, { loading }] = useMutation(
+    DELETE_ITEM_FROM_CART_MUTATION,
+    {
+      variables: { id },
+      update,
+      optimisticResponse: {
+        deleteCartItem: {
+          id,
+          __typename: 'CartItem',
+        },
+      },
+    }
+  );
 
   return (
     <BigButton
       type="button"
       title="remove this item from cart"
       onClick={deleteCartItem}
+      disabled={loading}
     >
       &times;
     </BigButton>
