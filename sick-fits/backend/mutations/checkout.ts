@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { KeystoneContext } from '@keystone-next/types';
-import { OrderCreateInput } from '../.keystone/schema-types';
+import { CartItemCreateInput, OrderCreateInput } from '../.keystone/schema-types';
+import stripeConfig from '../lib/stripe';
 
 const graphql = String.raw;
 
@@ -45,10 +46,26 @@ async function checkout(
       }
     `
   });
-  console.dir(user, { depth: null })
 
   // Calculate the total price
-  // create the payment with the stripe library
+  const cartItems = user.cart.filter(cartItem => cartItem.product);
+  const amount = cartItems.reduce(function(tally: number, cartItem: CartItemCreateInput) {
+    return tally + cartItem.quantity * cartItem.product.price;
+  }, 0);
+  console.log(amount);
+  // create the charge with the stripe library
+  const charge = await stripeConfig.paymentIntents.create({
+    amount,
+    currency: 'USD',
+    confirm: true,
+    payment_method: token,
+  }).catch(err => {
+    console.log(err);
+    throw new Error(err.message)
+
+  })
   // convert the cart items to order items
   // create the order and return it
 }
+
+export default checkout;
