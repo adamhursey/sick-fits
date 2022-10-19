@@ -2,6 +2,7 @@
 import { KeystoneContext } from '@keystone-next/types';
 import { CartItemCreateInput, OrderCreateInput } from '../.keystone/schema-types';
 import stripeConfig from '../lib/stripe';
+import { CartItem } from '../schemas/CartItem';
 
 const graphql = String.raw;
 
@@ -67,7 +68,31 @@ async function checkout(
   console.log(charge);
 
   // convert the cart items to order items
+  const orderItems = cartItems.map(cartItem => {
+    const orderItem = {
+      name: cartItem.product.name,
+      description: cartItem.product.description,
+      price: cartItem.product.price,
+      quantity: cartItem.quantity,
+      photo: {connect: {id: cartItem.product.photo.id}},
+    }
+    return orderItem;
+  })
   // create the order and return it
+  const order = await context.lists.Order.createOne({
+    data: {
+      total: charge.amount,
+      charge: charge.id,
+      items: { create: orderItems},
+      user: {connect: {id: userId}}
+    }
+  });
+  //cleanup old cart items
+  const cartItemIds = cartItems.map(cartItem => cartItem.id);
+  await context.lists.CartItem.deleteMany({
+    ids: cartItemIds
+  });
+  return order;
 }
 
 export default checkout;
